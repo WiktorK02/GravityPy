@@ -1,3 +1,3 @@
-dist
-gravity.egg-info
-build
+build/
+dist/
+gravitypy.egg-info/
