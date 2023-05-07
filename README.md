@@ -1,6 +1,28 @@
 # Particles_Gravity
 ## About Project
-Simulation presents full customizable n-body problem using pygame 
+Simulation presents full customizable n-body problem using pygame
+## Getting Started
+### Prerequisites
+Download python, pip and check version
+```
+$ pip3 --version 
+$ python --version
+```
+### Installation
+#### Windows/Linux/Mac OS:
+```
+$ pip3 gravitypy
+```
+### Run 
+#### Windows/Linux/Mac OS:
+```
+$ gravitypy
+```
+### Upgrade version
+#### Windows/Linux/Mac OS:
+```
+$ pip3 install --upgrade gravitypy
+```
 ## Demo 
 ![gif](https://user-images.githubusercontent.com/123249470/236646110-be4bdf11-9532-4dd3-bc83-0b9ed5e365ce.gif)
 ![gif](https://user-images.githubusercontent.com/123249470/236646107-053e41b3-52e6-46e1-b30d-7fae6ee85a1a.gif)
