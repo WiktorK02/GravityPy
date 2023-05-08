@@ -7,7 +7,7 @@ import os
 pygame.init()
 pygame.display.set_caption("GravityPy")
 
-WIDTH, HEIGHT = 1200, 800
+WIDTH, HEIGHT = 1200, 700
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 CLOCK = pygame.time.Clock()
 font_path = os.path.join(os.path.dirname(__file__), 'resources/fonts/minecraft_font.ttf')
@@ -59,7 +59,8 @@ class Particle:
         scaled_x = int(mouse_x + (self.position.x - mouse_x) * SCALE)
         scaled_y = int(mouse_y + (self.position.y - mouse_y) * SCALE)
         circle_center = (scaled_x, scaled_y)
-        pygame.draw.circle(SCREEN, self.color, circle_center, int(self.radius * SCALE))
+        if 0 < scaled_y < HEIGHT and 0 < scaled_x < WIDTH: 
+            pygame.draw.circle(SCREEN, self.color, circle_center, int(self.radius * SCALE))
 
         # Render and position the statistics text
         if self.selected:
