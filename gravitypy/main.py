@@ -295,12 +295,13 @@ def main():
             scaled_mouse_y = int(MOUSE_Y + (actuale_mouse_y - MOUSE_Y) * SCALE)
             circle_center = (scaled_mouse_x, scaled_mouse_y)
             circle_radius = int(ADDED_RADIUS * SCALE)
-            pygame.draw.circle(
-                SCREEN, 
-                ADDED_COLOR , 
-                circle_center, 
-                circle_radius
-                )
+            if 0 < scaled_mouse_y < HEIGHT and 0 < scaled_mouse_x < WIDTH: 
+                pygame.draw.circle(
+                    SCREEN, 
+                    ADDED_COLOR , 
+                    circle_center, 
+                    circle_radius
+                    )
 
         if add_button_statement_put:
             particle_velocity = ADDED_VELOCITY.copy()
@@ -332,6 +333,7 @@ def main():
                     if particle != other_particle:
                         particle.apply_gravitational_force(other_particle, G)
             particle.draw_scaled(MOUSE_X, MOUSE_Y)
+        
         # Buttons
         button_increse_r = Buttons(50,50,"Increse R", pygame.Rect(50,50,120,25))
         button_decrese_r = Buttons(150,50,"Decrese R", pygame.Rect(50,85,120,25))
