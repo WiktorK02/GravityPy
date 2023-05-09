@@ -1,4 +1,4 @@
-# Particles_Gravity
+# GravityPy
 ## About Project
 Simulation presents full customizable n-body problem using pygame
 ## Getting Started
