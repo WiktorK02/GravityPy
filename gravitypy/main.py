@@ -248,16 +248,17 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     move_particles = True
-                    move_direction = pygame.Vector2(5, 0)
+                    move_direction = pygame.Vector2(5/SCALE, 0)
+                    print(pygame.Vector2(5*SCALE, 0))
                 elif event.key == pygame.K_RIGHT:
                     move_particles = True
-                    move_direction = pygame.Vector2(-5, 0)
+                    move_direction = pygame.Vector2(-5/SCALE, 0)
                 elif event.key == pygame.K_UP:
                     move_particles = True
-                    move_direction = pygame.Vector2(0, 5)
+                    move_direction = pygame.Vector2(0, 5/SCALE)
                 elif event.key == pygame.K_DOWN:
                     move_particles = True
-                    move_direction = pygame.Vector2(0, -5)
+                    move_direction = pygame.Vector2(0, -5/SCALE)
                 elif event.key == pygame.K_SPACE:
                     pause = not pause
             elif event.type == pygame.KEYUP:
@@ -369,4 +370,3 @@ def main():
         pygame.display.flip()
         CLOCK.tick(60)
     pygame.quit()
-
