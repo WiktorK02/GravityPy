@@ -2,107 +2,13 @@ import pygame
 import random
 import math
 from pygame.locals import *
-import os
+import resources.config as var
+from resources import *
 
 pygame.init()
 pygame.display.set_caption("GravityPy")
 
-WIDTH, HEIGHT = 1200, 700
-SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-CLOCK = pygame.time.Clock()
-font_path = os.path.join(os.path.dirname(__file__), 'resources/fonts/minecraft_font.ttf')
-
-FONT = pygame.font.Font(font_path, 16)
-G = 100
-SCALE = 1.0
-PARTICLES = []
-ADDED_RADIUS = 20
-ADDED_MASS = 20
-ADDED_VELOCITY = pygame.Vector2(0, 0)
-NUM_PARTICLES = 30
-ADDED_COLOR = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
-
-reset_button_statement = False
-reset_scale_button_statement = False
-
-class Buttons:
-    def __init__(self, x_pos, y_pos, text_input, button_rect):
-        self.x_pos = x_pos
-        self.y_pos = y_pos
-        self.text_input = text_input
-        self.button_rect = button_rect
-        self.text = FONT.render(self.text_input, True, "white")
-        self.text_rect = self.text.get_rect(center=(self.button_rect.center))
-        self.surface = pygame.Surface(self.button_rect.size, pygame.SRCALPHA)  # Create a surface with transparency
-        color = (100, 80, 90, 128)  # Set the color with transparency
-        pygame.draw.rect(self.surface, color, (0, 0, *self.button_rect.size))  # Draw the rectangle on the surface
-        SCREEN.blit(self.surface, self.button_rect)  # Blit the surface onto the screen
-        SCREEN.blit(self.text, self.text_rect)
-
-class Particle:
-    def __init__(self, x, y, mass, color, radius, velocity):
-        self.position = pygame.Vector2(x, y)
-        self.velocity = velocity
-        self.mass = mass
-        self.radius = radius
-        self.color = color
-        self.stats_text = None
-        self.selected = None
-    def apply_force(self, force):
-        acceleration = force / self.mass
-        self.velocity += acceleration
-    def update(self):
-        self.position += self.velocity
-    
-    def draw_scaled(self, mouse_x, mouse_y):
-        scaled_x = int(mouse_x + (self.position.x - mouse_x) * SCALE)
-        scaled_y = int(mouse_y + (self.position.y - mouse_y) * SCALE)
-        circle_center = (scaled_x, scaled_y)
-        if 0 < scaled_y < HEIGHT and 0 < scaled_x < WIDTH: 
-            pygame.draw.circle(SCREEN, self.color, circle_center, int(self.radius * SCALE))
-
-        # Render and position the statistics text
-        if self.selected:
-            stats_lines = [
-                f"Mass: {self.mass}",
-                f"Radius: {self.radius}",
-                f"Velocity: {round(self.velocity.x, 2), round(self.velocity.y, 2)}"
-            ]
-            line_height = 20  
-            text_y = scaled_y + int(self.radius * SCALE) + 10  
-            for i, line in enumerate(stats_lines):
-                stats_text = FONT.render(line, True, (255, 255, 255))
-                stats_text_rect = stats_text.get_rect(center=(scaled_x, text_y + i * line_height))
-                SCREEN.blit(stats_text, stats_text_rect)
-    def apply_gravitational_force(self, other_particle, G):
-        dx = abs(self.position.x - other_particle.position.x)
-        dy = abs(self.position.y - other_particle.position.y)
-
-        if dx < self.radius or dy < self.radius:
-            pass
-        else:
-            try:
-                r = math.sqrt(dx**2 + dy**2)
-                a = G * other_particle.mass / r**2
-                theta = math.asin(dy / r)
-
-                if self.position.y  > other_particle.position.y:
-                    self.apply_force(pygame.Vector2(0, -math.sin(theta) * a))
-                else:
-                    self.apply_force(pygame.Vector2(0, math.sin(theta) * a))
-
-                if self.position.x > other_particle.position.x:
-                    self.apply_force(pygame.Vector2(-math.cos(theta) * a, 0))
-                else:
-                    self.apply_force(pygame.Vector2(math.cos(theta) * a, 0))
-            except ZeroDivisionError:
-                pass
-    def is_clicked(self, mouse_pos):
-        return self.position.distance_to(pygame.Vector2(*mouse_pos)) <= self.radiusresources                
-
 def main():
-    global reset_button_statement, reset_scale_button_statement, NUM_PARTICLES, PARTICLES, MOUSE_X, MOUSE_Y, SCALE, ADDED_COLOR, ADDED_VELOCITY
     # Initialize button states
     increase_button_stateR = False
     decrease_button_stateR = False
@@ -122,64 +28,66 @@ def main():
     move_particles = False
     pause = False
 
-    selected_particle = None
+    reset_button_statement = False
+    reset_scale_button_statement = False
+
     # Generate random particles
-    for i in range(NUM_PARTICLES):
+    for i in range(var.NUM_PARTICLES):
         if i == 0:
-            x = WIDTH // 2
-            y = HEIGHT// 2
+            x = var.WIDTH // 2
+            y = var.HEIGHT// 2
             mass = 60
-            PARTICLES.append(Particle(x, y, mass, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), random.randint(30, 30), pygame.Vector2(0, 0)))
+            var.PARTICLES.append(Particles(x, y, mass, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), random.randint(30, 30), pygame.Vector2(0, 0)))
         else:
-            x = random.randint(0, WIDTH)
-            y = random.randint(0, HEIGHT)
+            x = random.randint(0, var.WIDTH)
+            y = random.randint(0, var.HEIGHT)
             mass = random.uniform(1, 10)
             mass = 5
-            PARTICLES.append(Particle(x, y, mass, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), random.randint(0, 5), pygame.Vector2(0, 0)))
+            var.PARTICLES.append(Particles(x, y, mass, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), random.randint(0, 5), pygame.Vector2(0, 0)))
 
     def decrease_radius():
-        global ADDED_RADIUS
-        if ADDED_RADIUS-1 != 0:
-            ADDED_RADIUS -= 1
+        if var.ADDED_RADIUS-1 != 0:
+            var.ADDED_RADIUS -= 1
+        return var.ADDED_RADIUS 
 
     def increase_radius():
-        global ADDED_RADIUS
-        ADDED_RADIUS += 1
+        var.ADDED_RADIUS += 1
+        return var.ADDED_RADIUS 
 
     def decrease_mass():
-        global ADDED_MASS
-        if ADDED_MASS-1 != 0:
-            ADDED_MASS -= 1
+        if var.ADDED_MASS-1 != 0:
+            var.ADDED_MASS -= 1
+        return var.ADDED_MASS
 
     def increase_mass():
-        global ADDED_MASS
-        ADDED_MASS += 1
+        var.ADDED_MASS += 1
+        return var.ADDED_MASS
 
     def decrease_velocity_x():
         if not add_button_statement_put:
-            ADDED_VELOCITY.x -= 0.05
-        return ADDED_VELOCITY.x 
+            var.ADDED_VELOCITY.x -= 0.05
+        return var.ADDED_VELOCITY.x 
     def increase_velocity_x():
         if not add_button_statement_put:
-            ADDED_VELOCITY.x += 0.05
-        return ADDED_VELOCITY.x 
+            var.ADDED_VELOCITY.x += 0.05
+        return var.ADDED_VELOCITY.x 
     def decrease_velocity_y():
         if not add_button_statement_put:
-            ADDED_VELOCITY.y -= 0.05
-        return ADDED_VELOCITY.y
+            var.ADDED_VELOCITY.y -= 0.05
+        return var.ADDED_VELOCITY.y
     def increase_velocity_y():
         if not add_button_statement_put:
-            ADDED_VELOCITY.y += 0.05
-        return ADDED_VELOCITY.y
+            var.ADDED_VELOCITY.y += 0.05
+        return var.ADDED_VELOCITY.y
     def reset_particles():
-        global reset_button_statement, NUM_PARTICLES, PARTICLES
-        NUM_PARTICLES = 0
-        PARTICLES = []
+        var.NUM_PARTICLES = 0
+        var.PARTICLES = []
         reset_button_statement = False
+        return var.NUM_PARTICLES, var.PARTICLES, reset_button_statement
     def reset_scale():
-        global reset_scale_button_statement, SCALE
-        SCALE = 1
+        var.SCALE = 1
         reset_scale_button_statement = False
+        return var.SCALE, reset_scale_button_statement
 
     running = True
     while running:
@@ -213,24 +121,24 @@ def main():
                         reset_button_statement = True
                     elif reset_scale_button.button_rect.collidepoint(event.pos):
                         reset_scale_button_statement = True
-                    for particle in PARTICLES:
-                        scaled_x = int(MOUSE_X + (particle.position.x - MOUSE_X) * SCALE)
-                        scaled_y = int(MOUSE_Y + (particle.position.y - MOUSE_Y) * SCALE)
+                    for particle in var.PARTICLES:
+                        scaled_x = int(var.MOUSE_X + (particle.position.x - var.MOUSE_X) * var.SCALE)
+                        scaled_y = int(var.MOUSE_Y + (particle.position.y - var.MOUSE_Y) * var.SCALE)
                         distance = math.sqrt((event.pos[0] - scaled_x)**2 + (event.pos[1] - scaled_y)**2)
-                        if distance <= particle.radius * SCALE:
+                        if distance <= particle.radius * var.SCALE:
                             particle.selected = not particle.selected
 
                 if event.button == 3: # Right click
                     if add_button_statement:
                         add_button_statement = False
                 elif event.button == 4:  # Scroll Up
-                    SCALE += 0.1
-                    MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+                    var.SCALE += 0.1
+                    var.MOUSE_X, var.MOUSE_Y = pygame.mouse.get_pos()
                     
                 elif event.button == 5:  # Scroll Down
-                    if SCALE - 0.1 > 0:
-                        SCALE -= 0.1
-                        MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
+                    if var.SCALE - 0.1 > 0:
+                        var.SCALE -= 0.1
+                        var.MOUSE_X, var.MOUSE_Y = pygame.mouse.get_pos()
                     
             elif event.type == pygame.MOUSEBUTTONUP:
                 initial_mouse_pos = None
@@ -244,21 +152,24 @@ def main():
                     decrease_button_stateVx = False
                     increase_button_stateVy = False
                     decrease_button_stateVy = False
+                    reset_button_statement = False
+                    reset_scale_button_statement = False
+
                     
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     move_particles = True
-                    move_direction = pygame.Vector2(5/SCALE, 0)
-                    print(pygame.Vector2(5*SCALE, 0))
+                    move_direction = pygame.Vector2(5/var.SCALE, 0)
+                    print(pygame.Vector2(5*var.SCALE, 0))
                 elif event.key == pygame.K_RIGHT:
                     move_particles = True
-                    move_direction = pygame.Vector2(-5/SCALE, 0)
+                    move_direction = pygame.Vector2(-5/var.SCALE, 0)
                 elif event.key == pygame.K_UP:
                     move_particles = True
-                    move_direction = pygame.Vector2(0, 5/SCALE)
+                    move_direction = pygame.Vector2(0, 5/var.SCALE)
                 elif event.key == pygame.K_DOWN:
                     move_particles = True
-                    move_direction = pygame.Vector2(0, -5/SCALE)
+                    move_direction = pygame.Vector2(0, -5/var.SCALE)
                 elif event.key == pygame.K_SPACE:
                     pause = not pause
             elif event.type == pygame.KEYUP:
@@ -266,7 +177,7 @@ def main():
                     move_particles = False
 
         # Draw the background image on the screen
-        SCREEN.fill((20,20,40))
+        var.SCREEN.fill((20,20,40))
         #screen.blit(background_image, (0, 0))
 
         if increase_button_stateR:
@@ -292,48 +203,48 @@ def main():
 
         if add_button_statement:
             actual_mouse_x, actuale_mouse_y = pygame.mouse.get_pos()
-            scaled_mouse_x = int(MOUSE_X + (actual_mouse_x - MOUSE_X) * SCALE)
-            scaled_mouse_y = int(MOUSE_Y + (actuale_mouse_y - MOUSE_Y) * SCALE)
+            scaled_mouse_x = int(var.MOUSE_X + (actual_mouse_x - var.MOUSE_X) * var.SCALE)
+            scaled_mouse_y = int(var.MOUSE_Y + (actuale_mouse_y - var.MOUSE_Y) * var.SCALE)
             circle_center = (scaled_mouse_x, scaled_mouse_y)
-            circle_radius = int(ADDED_RADIUS * SCALE)
-            if 0 < scaled_mouse_y < HEIGHT and 0 < scaled_mouse_x < WIDTH: 
+            circle_radius = int(var.ADDED_RADIUS * var.SCALE)
+            if 0 < scaled_mouse_y < var.HEIGHT and 0 < scaled_mouse_x < var.WIDTH: 
                 pygame.draw.circle(
-                    SCREEN, 
-                    ADDED_COLOR , 
+                    var.SCREEN, 
+                    var.ADDED_COLOR , 
                     circle_center, 
                     circle_radius
                     )
 
         if add_button_statement_put:
-            particle_velocity = ADDED_VELOCITY.copy()
-            PARTICLES.append(
-                Particle(
+            particle_velocity = var.ADDED_VELOCITY.copy()
+            var.PARTICLES.append(
+                Particles(
                     actual_mouse_x,
                     actuale_mouse_y,
-                    ADDED_MASS,
-                    ADDED_COLOR ,
-                    ADDED_RADIUS,
+                    var.ADDED_MASS,
+                    var.ADDED_COLOR ,
+                    var.ADDED_RADIUS,
                     particle_velocity
                 )
             )
             add_button_statement_put = False
-            ADDED_COLOR  = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-            NUM_PARTICLES += 1
+            var.ADDED_COLOR  = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+            var.NUM_PARTICLES += 1
 
         # Sort in case bigger particles do not cover smaller ones 
-        PARTICLES = sorted(PARTICLES, key=lambda x: x.radius, reverse=True)
-        for particle in PARTICLES:
+        var.PARTICLES = sorted(var.PARTICLES, key=lambda x: x.radius, reverse=True)
+        for particle in var.PARTICLES:
             if move_particles:
-                particle.position += move_direction * SCALE
+                particle.position += move_direction * var.SCALE
             elif pause:
                 pass
             else:
                 particle.update()
             
-                for other_particle in PARTICLES:
+                for other_particle in var.PARTICLES:
                     if particle != other_particle:
-                        particle.apply_gravitational_force(other_particle, G)
-            particle.draw_scaled(MOUSE_X, MOUSE_Y)
+                        particle.apply_gravitational_force(other_particle, var.G)
+            particle.draw_scaled(var.MOUSE_X, var.MOUSE_Y)
         
         # Buttons
         button_increse_r = Buttons(50,50,"Increse R", pygame.Rect(50,50,120,25))
@@ -349,24 +260,25 @@ def main():
         reset_scale_button = Buttons(350,50,"Reset scale", pygame.Rect(1050,50,120,25))
         
         # Text
-        text_radius = FONT.render(f'Radius: {ADDED_RADIUS}', True, (240,240,240))
-        SCREEN.blit(text_radius, (50, 20))
-
-        text_mass = FONT.render(f'Mass: {ADDED_MASS}', True, (240,240,240))
-        SCREEN.blit(text_mass, (200, 20))
+        text_radius = var.FONT.render(f'Radius: {var.ADDED_RADIUS}', True, (240,240,240))
+        var.SCREEN.blit(text_radius, (50, 20))
+        
+        text_mass = var.FONT.render(f'Mass: {var.ADDED_MASS}', True, (240,240,240))
+        var.SCREEN.blit(text_mass, (200, 20))
             
-        text_mass = FONT.render(f'Velocity: {ADDED_VELOCITY}', True, (240,240,240))
-        SCREEN.blit(text_mass, (350, 20))
+        text_mass = var.FONT.render(f'Velocity: {var.ADDED_VELOCITY}', True, (240,240,240))
+        var.SCREEN.blit(text_mass, (350, 20))
         
-        text_num_partciles = FONT.render(f'Number of particles: {NUM_PARTICLES}', True, (240,240,240))
-        SCREEN.blit(text_num_partciles, (950, 0))
+        text_num_partciles = var.FONT.render(f'Number of particles: {var.NUM_PARTICLES}', True, (240,240,240))
+        var.SCREEN.blit(text_num_partciles, (950, 0))
         
-        text_num_partciles = FONT.render(f'Scale: {int(SCALE*100)}%', True, (240,240,240))
-        SCREEN.blit(text_num_partciles, (950, 20))
+        text_num_partciles = var.FONT.render(f'Scale: {int(var.SCALE*100)}%', True, (240,240,240))
+        var.SCREEN.blit(text_num_partciles, (950, 20))
         
-        text_num_partciles = FONT.render('Move camera with arrows keys, pause with a space', True, (240,240,240))
-        SCREEN.blit(text_num_partciles, (WIDTH // 2 - 200, 0))
+        text_num_partciles = var.FONT.render('Move camera with arrows keys, pause with a space', True, (240,240,240))
+        var.SCREEN.blit(text_num_partciles, (var.WIDTH // 2 - 200, 0))
 
         pygame.display.flip()
-        CLOCK.tick(60)
+        var.CLOCK.tick(60)
     pygame.quit()
+main()
