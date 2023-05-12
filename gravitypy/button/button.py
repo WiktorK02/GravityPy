@@ -1,5 +1,5 @@
 import pygame
-from resources.config import * 
+from gravitypy.config import * 
 
 class Buttons:
     def __init__(self, x_pos, y_pos, text_input, button_rect):

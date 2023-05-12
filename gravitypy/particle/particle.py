@@ -1,5 +1,5 @@
 import pygame
-import resources.config as var 
+import gravitypy.config as var 
 import math
 
 class Particles:
@@ -27,7 +27,7 @@ class Particles:
         # Render and position the statistics text
         if self.selected:
             stats_lines = [
-                f"Mass hybuv vgvgv: {self.mass}",
+                f"Mass: {self.mass}",
                 f"Radius: {self.radius}",
                 f"Velocity: {round(self.velocity.x, 2), round(self.velocity.y, 2)}"
             ]
