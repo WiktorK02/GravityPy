@@ -1,10 +1,15 @@
 import pygame
 import random
+import os 
 
 pygame.init()
 pygame.display.set_caption("GravityPy")
 
-FONT = pygame.font.Font('gravitypy/resources/fonts/minecraft_font.ttf', 16)
+current_file = __file__
+current_dir = os.path.dirname(current_file)
+font_file = os.path.join(current_dir, 'resources', 'fonts', 'minecraft_font.ttf')
+font_size = 16
+FONT = pygame.font.Font(font_file, font_size)
 
 WIDTH, HEIGHT = 1200, 700
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
