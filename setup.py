@@ -9,17 +9,17 @@ LONG_DESCRIPTION = 'Pygame N-Body gravity simulation app'
 
 setup(
    name='gravitypy',
-   version='1.1.3',
-   description='Particles Gravity',
+   version='1.1.7',
+   description='GravityPy',
    license="MIT",
    author='WiktorK02',
    author_email='wiktor.kidon@hotmail.com',
-   url="https://github.com/WiktorK02/Particles_Gravity",
+   url="https://github.com/WiktorK02/gravityPy",
    long_description_content_type="text/markdown",
    package_data={'gravitypy': ['*']},
    include_package_data=True,
    long_description=LONG_DESCRIPTION,
-   packages=['gravitypy'],
+   packages=find_packages(),
    data_files=[('gravitypy/resources/fonts', ['gravitypy/resources/fonts/minecraft_font.ttf'])],
    install_requires=REQUIREMENTS, 
     entry_points={
