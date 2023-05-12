@@ -161,7 +161,6 @@ def main():
                 if event.key == pygame.K_LEFT:
                     move_particles = True
                     move_direction = pygame.Vector2(5/var.SCALE, 0)
-                    print(pygame.Vector2(5*var.SCALE, 0))
                 elif event.key == pygame.K_RIGHT:
                     move_particles = True
                     move_direction = pygame.Vector2(-5/var.SCALE, 0)
