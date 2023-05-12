@@ -1,4 +1,10 @@
+
+<p align="center">
+  <img src="https://github.com/WiktorK02/gravityPy/assets/123249470/4654f194-126f-4bdf-a892-2cb88ecb82a2" width="1000" height="300">
+</p>
+
 # GravityPy
+
 ## About Project
 Simulation presents full customizable n-body problem using pygame
 ## Getting Started
