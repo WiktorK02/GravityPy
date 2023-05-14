@@ -1,7 +1,4 @@
-
-<p align="center">
-  <img src="https://github.com/WiktorK02/gravityPy/assets/123249470/4654f194-126f-4bdf-a892-2cb88ecb82a2" width="1000" height="300">
-</p>
+![up (1)](https://github.com/WiktorK02/gravitypy/assets/123249470/42d216fd-228d-4281-9f38-fc4d053320d5)
 
 # GravityPy
 
