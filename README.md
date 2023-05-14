@@ -29,7 +29,14 @@ $ gravitypy
 ```
 $ pip3 install --upgrade gravitypy
 ```
-## Demo 
+## Usage
+|Keys    |  Usage   |     
+| ------------- | ------------- | 
+| Arrow keys     | Move camera         | 
+| Space           | Pause        | 
+| Right click         | Add particle  (while in "add particle" mode)     |
+| Left click         | Remove particle (while in "add particle" mode)     |
+### Demo 
 ![gif](https://user-images.githubusercontent.com/123249470/236646110-be4bdf11-9532-4dd3-bc83-0b9ed5e365ce.gif)
 ![gif](https://user-images.githubusercontent.com/123249470/236646107-053e41b3-52e6-46e1-b30d-7fae6ee85a1a.gif)
 ![gif](https://user-images.githubusercontent.com/123249470/236646111-3484842c-0e67-442d-a6ab-337d866f97c5.gif)
