@@ -3,7 +3,7 @@
 # GravityPy
 
 ## About Project
-Simulation presents full customizable n-body problem using pygame
+GravityPy is a pygame application presenting a fully customizable n-body gravity simulation
 ## Getting Started
 ### Prerequisites
 Download python, pip and check version
