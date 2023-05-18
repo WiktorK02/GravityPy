@@ -1,3 +1,5 @@
+
+![up (1)](https://github.com/WiktorK02/gravitypy/assets/123249470/bba03417-8be4-4270-9402-741e3c763355)
 # GravityPy
 ## About Project
 GravityPy is a high-performance pygame application presenting a fully customizable n-body gravity simulation
