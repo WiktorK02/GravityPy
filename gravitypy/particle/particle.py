@@ -1,7 +1,89 @@
 import pygame
-import gravitypy.config as var 
 import math
 
+class QuadTree:
+    def __init__(self, boundary, capacity):
+        self.boundary = boundary
+        self.capacity = capacity
+        self.particles = []
+        self.is_divided = False
+        self.northwest = None
+        self.northeast = None
+        self.southwest = None
+        self.southeast = None
+
+    def insert(self, particle):
+        if not self.boundary.collidepoint(particle.position.x, particle.position.y):
+            return False
+
+        if len(self.particles) < self.capacity:
+            self.particles.append(particle)
+            return True
+
+        if not self.is_divided:
+            self.subdivide()
+
+        if self.northwest.insert(particle):
+            return True
+        if self.northeast.insert(particle):
+            return True
+        if self.southwest.insert(particle):
+            return True
+        if self.southeast.insert(particle):
+            return True
+
+    def subdivide(self):
+        x, y, w, h = self.boundary
+        nw_boundary = pygame.Rect(int(x), int(y), int(w / 2), int(h / 2))
+        ne_boundary = pygame.Rect(int(x + w / 2), int(y), int(w / 2), int(h / 2))
+        sw_boundary = pygame.Rect(int(x), int(y + h / 2), int(w / 2), int(h / 2))
+        se_boundary = pygame.Rect(int(x + w / 2), int(y + h / 2), int(w / 2), int(h / 2))
+
+        self.northwest = QuadTree(nw_boundary, self.capacity)
+        self.northeast = QuadTree(ne_boundary, self.capacity)
+        self.southwest = QuadTree(sw_boundary, self.capacity)
+        self.southeast = QuadTree(se_boundary, self.capacity)
+
+        self.is_divided = True
+    
+    def calculate_forces(self, particle, G):
+        for other_particle in self.particles:
+            if particle != other_particle:
+                dx = abs(particle.position.x - other_particle.position.x)
+                dy = abs(particle.position.y - other_particle.position.y)
+
+                if dx < particle.radius or dy < particle.radius:
+                    continue
+                else:
+                    try:
+                        r_squared = dx**2 + dy**2
+                        r = math.sqrt(r_squared)
+                        a = G * other_particle.mass / r_squared
+                        theta = math.asin(dy / r)
+
+                        if particle.position.y > other_particle.position.y:
+                            sin_theta = -math.sin(theta)
+                        else:
+                            sin_theta = math.sin(theta)
+
+                        if particle.position.x > other_particle.position.x:
+                            cos_theta = -math.cos(theta)
+                        else:
+                            cos_theta = math.cos(theta)
+
+                        particle.apply_force(pygame.Vector2(cos_theta * a, sin_theta * a))
+                    except ZeroDivisionError:
+                        pass
+
+        if self.is_divided:
+            if self.northwest.boundary.colliderect(pygame.Rect(int(particle.position.x), int(particle.position.y), 1, 1)):
+                self.northwest.calculate_forces(particle, G)
+            if self.northeast.boundary.colliderect(pygame.Rect(int(particle.position.x), int(particle.position.y), 1, 1)):
+                self.northeast.calculate_forces(particle, G)
+            if self.southwest.boundary.colliderect(pygame.Rect(int(particle.position.x), int(particle.position.y), 1, 1)):
+                self.southwest.calculate_forces(particle, G)
+            if self.southeast.boundary.colliderect(pygame.Rect(int(particle.position.x), int(particle.position.y), 1, 1)):
+                self.southeast.calculate_forces(particle, G)
 class Particles:
     def __init__(self, x, y, mass, color, radius, velocity):
         self.position = pygame.Vector2(x, y)
@@ -11,54 +93,38 @@ class Particles:
         self.color = color
         self.stats_text = None
         self.selected = None
+
     def apply_force(self, force):
         acceleration = force / self.mass
         self.velocity += acceleration
+
     def update(self):
         self.position += self.velocity
-    
-    def draw_scaled(self, mouse_x, mouse_y):
-        scaled_x = int(mouse_x + (self.position.x - mouse_x) * var.SCALE)
-        scaled_y = int(mouse_y + (self.position.y - mouse_y) * var.SCALE)
+
+    def draw_scaled(self, mouse_x, mouse_y, scale, width, height, screen, font):
+        scaled_x = int(mouse_x + (self.position.x - mouse_x) * scale)
+        scaled_y = int(mouse_y + (self.position.y - mouse_y) * scale)
         circle_center = (scaled_x, scaled_y)
-        if 0 < scaled_y < var.HEIGHT and 0 < scaled_x < var.WIDTH: 
-            pygame.draw.circle(var.SCREEN, self.color, circle_center, int(self.radius * var.SCALE))
+        radius_scaled = int(self.radius * scale)
+
+        if 0 < scaled_y < height and 0 < scaled_x < width:
+            pygame.draw.circle(screen, self.color, circle_center, radius_scaled)
 
         # Render and position the statistics text
         if self.selected:
+            text_y = scaled_y + radius_scaled + 10
             stats_lines = [
                 f"Mass: {self.mass}",
                 f"Radius: {self.radius}",
                 f"Velocity: {round(self.velocity.x, 2), round(self.velocity.y, 2)}"
             ]
-            line_height = 20  
-            text_y = scaled_y + int(self.radius * var.SCALE) + 10  
-            for i, line in enumerate(stats_lines):
-                stats_text = var.FONT.render(line, True, (255, 255, 255))
+            line_height = 20
+            stats_surfaces = [font.render(line, True, (255, 255, 255)) for line in stats_lines]
+
+            for i, stats_text in enumerate(stats_surfaces):
                 stats_text_rect = stats_text.get_rect(center=(scaled_x, text_y + i * line_height))
-                var.SCREEN.blit(stats_text, stats_text_rect)
-    def apply_gravitational_force(self, other_particle, G):
-        dx = abs(self.position.x - other_particle.position.x)
-        dy = abs(self.position.y - other_particle.position.y)
+                screen.blit(stats_text, stats_text_rect)
 
-        if dx < self.radius or dy < self.radius:
-            pass
-        else:
-            try:
-                r = math.sqrt(dx**2 + dy**2)
-                a = G * other_particle.mass / r**2
-                theta = math.asin(dy / r)
-
-                if self.position.y  > other_particle.position.y:
-                    self.apply_force(pygame.Vector2(0, -math.sin(theta) * a))
-                else:
-                    self.apply_force(pygame.Vector2(0, math.sin(theta) * a))
-
-                if self.position.x > other_particle.position.x:
-                    self.apply_force(pygame.Vector2(-math.cos(theta) * a, 0))
-                else:
-                    self.apply_force(pygame.Vector2(math.cos(theta) * a, 0))
-            except ZeroDivisionError:
-                pass
     def is_clicked(self, mouse_pos):
-        return self.position.distance_to(pygame.Vector2(*mouse_pos)) <= self.radiusresources                
+        squared_distance = self.position.distance_squared_to(pygame.Vector2(*mouse_pos))
+        return squared_distance <= self.radius**2

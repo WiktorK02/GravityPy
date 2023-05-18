@@ -1,9 +1,6 @@
-![up (1)](https://github.com/WiktorK02/gravitypy/assets/123249470/42d216fd-228d-4281-9f38-fc4d053320d5)
-
 # GravityPy
-
 ## About Project
-GravityPy is a pygame application presenting a fully customizable n-body gravity simulation
+Simulation presents full customizable n-body problem using pygame
 ## Getting Started
 ### Prerequisites
 Download python, pip and check version
@@ -26,14 +23,7 @@ $ gravitypy
 ```
 $ pip3 install --upgrade gravitypy
 ```
-## Usage
-|Keys    |  Usage   |     
-| ------------- | ------------- | 
-| Arrow keys     | Move camera         | 
-| Space           | Pause        | 
-| Right click         | Add particle  (while in "add particle" mode)     |
-| Left click         | Remove particle (while in "add particle" mode)     |
-### Demo 
+## Demo 
 ![gif](https://user-images.githubusercontent.com/123249470/236646110-be4bdf11-9532-4dd3-bc83-0b9ed5e365ce.gif)
 ![gif](https://user-images.githubusercontent.com/123249470/236646107-053e41b3-52e6-46e1-b30d-7fae6ee85a1a.gif)
 ![gif](https://user-images.githubusercontent.com/123249470/236646111-3484842c-0e67-442d-a6ab-337d866f97c5.gif)

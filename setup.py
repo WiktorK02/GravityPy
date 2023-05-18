@@ -9,7 +9,7 @@ LONG_DESCRIPTION = 'Pygame N-Body gravity simulation app'
 
 setup(
    name='gravitypy',
-   version='1.1.7',
+   version='1.2.0',
    description='GravityPy',
    license="MIT",
    author='WiktorK02',
