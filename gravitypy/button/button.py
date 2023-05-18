@@ -35,24 +35,20 @@ class Buttons:
         return added_mass + 1
 
     def decrease_velocity_x(self, added_velocity, add_button_statement_put):
-        if not add_button_statement_put:
-            added_velocity.x -= 0.05
-            return added_velocity
+        added_velocity.x -= 0.05
+        return added_velocity
 
     def increase_velocity_x(self, added_velocity, add_button_statement_put):
-        if not add_button_statement_put:
-            added_velocity.x += 0.05
-            return added_velocity
+        added_velocity.x += 0.05
+        return added_velocity
 
     def decrease_velocity_y(self, added_velocity, add_button_statement_put):
-        if not add_button_statement_put:
-            added_velocity.y -= 0.05
-            return added_velocity
+        added_velocity.y -= 0.05
+        return added_velocity
 
     def increase_velocity_y(self, added_velocity, add_button_statement_put):
-        if not add_button_statement_put:
-            added_velocity.y += 0.05
-            return added_velocity
+        added_velocity.y += 0.05
+        return added_velocity
 
     def reset_particles(self, num_particles, particles, reset_button_statement):
         num_particles = 0
