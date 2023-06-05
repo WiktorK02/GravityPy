@@ -1,5 +1,6 @@
 import pygame
 import math
+from collections import deque
 
 class QuadTree:
     def __init__(self, boundary, capacity):
@@ -93,6 +94,7 @@ class Particles:
         self.color = color
         self.stats_text = None
         self.selected = None
+        self.path = deque(maxlen=100)  # Maximum length of the path
 
     def apply_force(self, force):
         acceleration = force / self.mass
@@ -100,6 +102,7 @@ class Particles:
 
     def update(self):
         self.position += self.velocity
+        self.path.append(self.position.copy())  # Add current position to the path
 
     def draw_scaled(self, mouse_x, mouse_y, scale, width, height, screen, font):
         scaled_x = int(mouse_x + (self.position.x - mouse_x) * scale)
@@ -107,6 +110,7 @@ class Particles:
         circle_center = (scaled_x, scaled_y)
         radius_scaled = int(self.radius * scale)
 
+        # Draw the particle if it is within the screen boundaries
         if 0 < scaled_y < height and 0 < scaled_x < width:
             pygame.draw.circle(screen, self.color, circle_center, radius_scaled)
 
@@ -124,6 +128,16 @@ class Particles:
             for i, stats_text in enumerate(stats_surfaces):
                 stats_text_rect = stats_text.get_rect(center=(scaled_x, text_y + i * line_height))
                 screen.blit(stats_text, stats_text_rect)
+                        # Add the current position to the path (unscaled)
+            self.path.append(self.position.copy())
+
+            # Scale the path coordinates
+            scaled_path = [(int(mouse_x + (pos.x - mouse_x) * scale), int(mouse_y + (pos.y - mouse_y) * scale))
+                        for pos in self.path]
+
+            # Draw the path if it has at least two points
+            if len(scaled_path) >= 16:
+                pygame.draw.lines(screen, self.color, False, scaled_path)
 
     def is_clicked(self, mouse_pos):
         squared_distance = self.position.distance_squared_to(pygame.Vector2(*mouse_pos))

@@ -11,7 +11,7 @@ class Buttons:
         self.surface = pygame.Surface(self.button_rect.size, pygame.SRCALPHA) 
         self.color = (100, 80, 90, 128)  # Set the color with transparency
         
-    def draw(self, screen):   
+    def draw(self, screen): 
         pygame.draw.rect(self.surface, self.color, (0, 0, *self.button_rect.size))  
         screen.blit(self.surface, self.button_rect)  
         screen.blit(self.text, self.text_rect)
@@ -50,13 +50,25 @@ class Buttons:
         added_velocity.y += 0.05
         return added_velocity
 
-    def reset_particles(self, num_particles, particles, reset_button_statement):
-        num_particles = 0
-        particles = []
+    def reset_particles(self, num_particles, particles, reset_button_statement, hide_button):
+        if not hide_button:    
+            num_particles = 0
+            particles = []
         reset_button_statement = False
         return num_particles, particles, reset_button_statement
 
-    def reset_scale(self, scale, reset_scale_button_statement):
-        scale = 1.0
-        reset_scale_button_statement = False
+    def reset_scale(self, scale, reset_scale_button_statement, hide_button):
+        if not hide_button:    
+            scale = 1.0
+            reset_scale_button_statement = False
         return scale, reset_scale_button_statement 
+    
+    def reset_vel(self, vel, reset_button_statement):
+        vel = pygame.Vector2(0, 0)
+        reset_button_statement = False
+        return vel, reset_button_statement
+   
+    def change_text(self, text_input, font):
+        self.text_input = text_input
+        self.text = font.render(self.text_input, True, "white")
+        self.text_rect = self.text.get_rect(center=self.button_rect.center)
