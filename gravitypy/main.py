@@ -3,8 +3,8 @@ import random
 import math
 import os
 from pygame.locals import *
-from button.button import Buttons
-from particle.particle import Particles, QuadTree
+from .button.button import Buttons
+from .particle.particle import Particles, QuadTree
 
 def main():
     pygame.init()
@@ -322,4 +322,4 @@ def main():
         pygame.display.update()
         CLOCK.tick(60)
     pygame.quit()
-main()
+
