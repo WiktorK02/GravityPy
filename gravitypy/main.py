@@ -3,8 +3,8 @@ import random
 import math
 import os
 from pygame.locals import *
-from button.button import Buttons
-from particle.particle import Particles, QuadTree
+from .button.button import Buttons
+from .particle.particle import Particles, QuadTree
 
 def main():
     pygame.init()
@@ -19,14 +19,14 @@ def main():
     WIDTH, HEIGHT = 1200, 700
     SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
     CLOCK = pygame.time.Clock()
-    G = 1
+    G = 100
     SCALE = 1.0
     PARTICLES = []
     ADDED_RADIUS = 5
     ADDED_MASS = 5
     ADDED_VELOCITY = pygame.Vector2(0, 0)
     NUM_PARTICLES = 250
-    ADDED_COLOR = (255,255,255)
+    ADDED_COLOR = (random.randint(0, 255),random.randint(0, 255),random.randint(0, 255))
     MOUSE_X, MOUSE_Y = pygame.mouse.get_pos()
     
     # Initialize states  
@@ -73,7 +73,7 @@ def main():
         if i == 0:
             x = WIDTH // 2
             y = HEIGHT// 2
-            mass = 10000
+            mass = 1000
             radius = random.randint(10, 10)
             PARTICLES.append(Particles(x, y, mass, (189, 255, 20) , radius, pygame.Vector2(0, 0)))
         else:
@@ -81,7 +81,7 @@ def main():
             y = 100 
             mass = int(random.uniform(1, 10))
             radius = int(random.randint(1, 3))
-            PARTICLES.append(Particles(x, y, mass, (255,255,255), radius, pygame.Vector2(2.0, 0)))
+            PARTICLES.append(Particles(x, y, mass, (random.randint(0, 255),random.randint(0, 255),random.randint(0, 255)), radius, pygame.Vector2(2.0, 0)))
 
     running = True
 
@@ -298,7 +298,7 @@ def main():
             )
             states['add_particle_put'] = False
             # Change color of the next particle
-            ADDED_COLOR  = (255,255,255)
+            ADDED_COLOR  = (random.randint(0, 255),random.randint(0, 255),random.randint(0, 255))
             NUM_PARTICLES += 1
 
         # Sort in case bigger particles do not cover smaller ones 
@@ -322,4 +322,4 @@ def main():
         pygame.display.update()
         CLOCK.tick(60)
     pygame.quit()
-main()
+
