@@ -37,7 +37,7 @@ $ pip3 install --upgrade gravitypy
 1. Fork the Project
 2. Clone repo with your GitHub username instead of ```YOUR-USERNAME```:<br>
 ```
-$ git clone https://github.com/YOUR-USERNAME/Particle_Gravity
+$ git clone https://github.com/YOUR-USERNAME/gravitypy
 ```
 3. Create new branch:<br>
 ```
